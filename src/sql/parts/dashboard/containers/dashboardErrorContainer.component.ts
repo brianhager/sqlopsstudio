@@ -9,13 +9,14 @@ import { Component, Inject, Input, forwardRef, ViewChild, ElementRef, ChangeDete
 
 import { TabConfig } from 'sql/parts/dashboard/common/dashboardWidget';
 import { DashboardTab } from 'sql/parts/dashboard/common/interfaces';
+import { TabChild } from 'sql/base/browser/ui/panel/tab.component';
 
 import Event, { Emitter } from 'vs/base/common/event';
 import * as nls from 'vs/nls';
 
 @Component({
 	selector: 'dashboard-error-container',
-	providers: [{ provide: DashboardTab, useExisting: forwardRef(() => DashboardErrorContainer) }],
+	providers: [{ provide: TabChild, useExisting: forwardRef(() => DashboardErrorContainer) }],
 	template: `
 		<div class="error-container">
 			<div class="icon globalError">
@@ -36,6 +37,8 @@ export class DashboardErrorContainer extends DashboardTab implements AfterViewIn
 	) {
 		super();
 	}
+
+	init() { }
 
 	ngAfterViewInit() {
 		let errorMessage = this._errorMessageContainer.nativeElement as HTMLElement;

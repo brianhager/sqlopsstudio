@@ -6,6 +6,7 @@
 import Event from 'vs/base/common/event';
 
 import { AngularDisposable } from 'sql/base/common/lifecycle';
+import { TabChild } from 'sql/base/browser/ui/panel/tab.component';
 
 export enum Conditional {
 	'equals',
@@ -17,12 +18,13 @@ export enum Conditional {
 	'always'
 }
 
-export abstract class DashboardTab extends AngularDisposable {
+export abstract class DashboardTab extends AngularDisposable implements TabChild {
 	public abstract layout(): void;
 	public abstract readonly id: string;
 	public abstract readonly editable: boolean;
 	public abstract refresh(): void;
 	public abstract readonly onResize: Event<void>;
+	public abstract init(): void;
 	public enableEdit(): void {
 		// no op
 	}

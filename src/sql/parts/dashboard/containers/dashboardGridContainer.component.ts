@@ -21,6 +21,7 @@ import * as objects from 'vs/base/common/objects';
 import Event, { Emitter } from 'vs/base/common/event';
 import { concat } from 'rxjs/operator/concat';
 import { WebviewContent } from 'sql/parts/dashboard/contents/webviewContent.component';
+import { TabChild } from 'sql/base/browser/ui/panel/tab.component';
 
 export interface GridCellConfig {
 	id?: string;
@@ -42,7 +43,7 @@ export interface GridWebviewConfig extends GridCellConfig {
 @Component({
 	selector: 'dashboard-grid-container',
 	templateUrl: decodeURI(require.toUrl('sql/parts/dashboard/containers/dashboardGridContainer.component.html')),
-	providers: [{ provide: DashboardTab, useExisting: forwardRef(() => DashboardGridContainer) }]
+	providers: [{ provide: TabChild, useExisting: forwardRef(() => DashboardGridContainer) }]
 })
 export class DashboardGridContainer extends DashboardTab implements OnDestroy {
 	@Input() private tab: TabConfig;
@@ -161,8 +162,7 @@ export class DashboardGridContainer extends DashboardTab implements OnDestroy {
 		super();
 	}
 
-	protected init() {
-	}
+	init() { }
 
 	ngOnInit() {
 		if (this.tab.container) {

@@ -166,7 +166,9 @@ export class WidgetContent extends AngularDisposable implements AfterViewInit {
 				item.layout();
 			});
 		}
-		this._grid.triggerResize();
+		if (this._grid) {
+			this._grid.triggerResize();
+		}
 		this.resetScrollDimensions();
 	}
 

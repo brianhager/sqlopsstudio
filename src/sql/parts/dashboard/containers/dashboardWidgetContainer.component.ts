@@ -14,6 +14,7 @@ import { DashboardWidgetWrapper } from 'sql/parts/dashboard/contents/dashboardWi
 import { subscriptionToDisposable } from 'sql/base/common/lifecycle';
 import { DashboardTab } from 'sql/parts/dashboard/common/interfaces';
 import { WidgetContent } from 'sql/parts/dashboard/contents/widgetContent.component';
+import { TabChild } from 'sql/base/browser/ui/panel/tab.component';
 
 import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
 import { ConfigurationTarget } from 'vs/platform/configuration/common/configuration';
@@ -22,7 +23,7 @@ import Event, { Emitter } from 'vs/base/common/event';
 
 @Component({
 	selector: 'dashboard-widget-container',
-	providers: [{ provide: DashboardTab, useExisting: forwardRef(() => DashboardWidgetContainer) }],
+	providers: [{ provide: TabChild, useExisting: forwardRef(() => DashboardWidgetContainer) }],
 	template: `
 		<widget-content [widgets]="widgets" [originalConfig]="tab.originalConfig" [context]="tab.context">
 		</widget-content>
@@ -33,6 +34,8 @@ export class DashboardWidgetContainer extends DashboardTab implements OnDestroy,
 	private widgets: WidgetConfig[];
 	private _onResize = new Emitter<void>();
 	public readonly onResize: Event<void> = this._onResize.event;
+	private initted = false;
+	private ngOnInitted = false;
 
 	@ViewChild(WidgetContent) protected _widgetContent: WidgetContent;
 
@@ -42,8 +45,19 @@ export class DashboardWidgetContainer extends DashboardTab implements OnDestroy,
 		super();
 	}
 
+	init() {
+		this.initted = true;
+		if (this.ngOnInitted && this.tab.container) {
+			this.widgets = Object.values(this.tab.container)[0];
+		}
+	}
+
+	ngOnInit() {
+		this.ngOnInitted = true;
+	}
+
 	ngOnChanges() {
-		if (this.tab.container) {
+		if (this.initted && this.tab.container) {
 			this.widgets = Object.values(this.tab.container)[0];
 			this._cd.detectChanges();
 		}

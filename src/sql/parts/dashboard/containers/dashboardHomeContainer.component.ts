@@ -12,13 +12,15 @@ import { DashboardTab } from 'sql/parts/dashboard/common/interfaces';
 import { WidgetConfig } from 'sql/parts/dashboard/common/dashboardWidget';
 import { DashboardServiceInterface } from 'sql/parts/dashboard/services/dashboardServiceInterface.service';
 import { CommonServiceInterface } from 'sql/services/common/commonServiceInterface.service';
-import { AngularEventType } from '../../../services/angularEventing/angularEventingService';
+import { AngularEventType } from 'sql/services/angularEventing/angularEventingService';
+import { TabChild } from 'sql/base/browser/ui/panel/tab.component';
 import { DashboardWidgetWrapper } from 'sql/parts/dashboard/contents/dashboardWidgetWrapper.component';
+
 import { ConfigurationTarget } from 'vs/platform/configuration/common/configuration';
 
 @Component({
 	selector: 'dashboard-home-container',
-	providers: [{ provide: DashboardTab, useExisting: forwardRef(() => DashboardHomeContainer) }],
+	providers: [{ provide: TabChild, useExisting: forwardRef(() => DashboardHomeContainer) }],
 	template: `
 		<dashboard-widget-wrapper #propertiesClass *ngIf="properties" [collapsable]="true" [_config]="properties"
 			style="padding-left: 10px; padding-right: 10px; display: block" [style.height.px]="_propertiesClass?.collapsed ? '30' : '90'">

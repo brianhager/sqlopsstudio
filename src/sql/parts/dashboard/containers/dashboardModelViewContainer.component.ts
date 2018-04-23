@@ -11,10 +11,11 @@ import Event, { Emitter } from 'vs/base/common/event';
 import { DashboardTab } from 'sql/parts/dashboard/common/interfaces';
 import { TabConfig } from 'sql/parts/dashboard/common/dashboardWidget';
 import { ModelViewContent } from 'sql/parts/modelComponents/modelViewContent.component';
+import { TabChild } from 'sql/base/browser/ui/panel/tab.component';
 
 @Component({
 	selector: 'dashboard-modelview-container',
-	providers: [{ provide: DashboardTab, useExisting: forwardRef(() => DashboardModelViewContainer) }],
+	providers: [{ provide: TabChild, useExisting: forwardRef(() => DashboardModelViewContainer) }],
 	template: `
 		<modelview-content [modelViewId]="tab.id">
 		</modelview-content>
@@ -30,6 +31,8 @@ export class DashboardModelViewContainer extends DashboardTab implements AfterCo
 	constructor() {
 		super();
 	}
+
+	init() { }
 
 	ngAfterContentInit(): void {
 		this._register(this._modelViewContent.onResize(() => {

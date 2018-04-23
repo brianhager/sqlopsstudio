@@ -10,6 +10,10 @@ export abstract class TabChild {
 	public abstract layout(): void;
 }
 
+export interface TabChild {
+	init?(): void;
+}
+
 @Component({
 	selector: 'tab',
 	template: `
@@ -27,10 +31,14 @@ export class TabComponent implements OnDestroy {
 	public _active = false;
 	@Input() public identifier: string;
 	@Input() private visibilityType: 'if' | 'visibility' = 'if';
+	private init = false;
 
 	public set active(val: boolean) {
 		this._active = val;
 		if (this.active && this._child) {
+			if (!this.init) {
+				this._child.init();
+			}
 			this._child.layout();
 		}
 	}
@@ -45,4 +53,9 @@ export class TabComponent implements OnDestroy {
 		}
 	}
 
+	layout() {
+		if (this._child) {
+			this._child.layout();
+		}
+	}
 }

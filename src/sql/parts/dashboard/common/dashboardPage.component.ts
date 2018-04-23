@@ -17,7 +17,7 @@ import { IPropertiesConfig } from 'sql/parts/dashboard/pages/serverDashboardPage
 import { PanelComponent } from 'sql/base/browser/ui/panel/panel.component';
 import { IDashboardRegistry, Extensions as DashboardExtensions, IDashboardTab } from 'sql/platform/dashboard/common/dashboardRegistry';
 import { PinUnpinTabAction, AddFeatureTabAction } from './actions';
-import { TabComponent } from 'sql/base/browser/ui/panel/tab.component';
+import { TabComponent, TabChild } from 'sql/base/browser/ui/panel/tab.component';
 import { IBootstrapService, BOOTSTRAP_SERVICE_ID } from 'sql/services/bootstrap/bootstrapService';
 import { AngularEventType } from 'sql/services/angularEventing/angularEventingService';
 import { DashboardTab } from 'sql/parts/dashboard/common/interfaces';
@@ -43,7 +43,6 @@ import Severity from 'vs/base/common/severity';
 
 const dashboardRegistry = Registry.as<IDashboardRegistry>(DashboardExtensions.DashboardContributions);
 
-
 @Component({
 	selector: 'dashboard-page',
 	templateUrl: decodeURI(require.toUrl('sql/parts/dashboard/common/dashboardPage.component.html'))
@@ -61,7 +60,7 @@ export abstract class DashboardPage extends AngularDisposable {
 	private _tabsDispose: Array<IDisposable> = [];
 	private _tabSettingConfigs: Array<TabSettingConfig> = [];
 
-	@ViewChildren(DashboardTab) private _tabs: QueryList<DashboardTab>;
+	@ViewChildren(TabChild) private _tabs: QueryList<DashboardTab>;
 	@ViewChild(PanelComponent) private _panel: PanelComponent;
 
 	private _editEnabled = new Emitter<boolean>();
@@ -142,7 +141,6 @@ export abstract class DashboardPage extends AngularDisposable {
 			actions: []
 		};
 		this.addNewTab(homeTab);
-		this._panel.selectTab(homeTab.id);
 
 		let allTabs = dashboardHelper.filterConfigs(dashboardRegistry.tabs, this.dashboardService);
 
@@ -253,7 +251,6 @@ export abstract class DashboardPage extends AngularDisposable {
 			}
 		}
 	}
-
 
 	private getContentType(tab: TabConfig): string {
 		return tab.container ? Object.keys(tab.container)[0] : '';

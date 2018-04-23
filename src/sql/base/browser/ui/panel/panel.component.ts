@@ -3,7 +3,7 @@
  *  Licensed under the Source EULA. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Component, ContentChildren, QueryList, AfterContentInit, Inject, forwardRef, NgZone, OnInit, Input, EventEmitter, Output, ViewChild, ElementRef, OnChanges, OnDestroy, ViewChildren, AfterViewInit } from '@angular/core';
+import { Component, ContentChildren, QueryList, AfterContentInit, Inject, forwardRef, NgZone, OnInit, Input, EventEmitter, Output, ViewChild, ElementRef, OnChanges, OnDestroy, ViewChildren, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 
 import { TabComponent } from './tab.component';
 import { TabHeaderComponent } from './tabHeader.component';
@@ -85,7 +85,11 @@ export class PanelComponent extends Disposable implements AfterContentInit, OnIn
 	@ViewChild('tabbedPanel', { read: ElementRef }) private _tabbedPanelRef: ElementRef;
 	@ViewChild('titleContainer', { read: ElementRef }) private _titleContainer: ElementRef;
 	@ViewChild('tabList', { read: ElementRef }) private _tabList: ElementRef;
-	constructor( @Inject(forwardRef(() => NgZone)) private _zone: NgZone) {
+
+	constructor(
+		@Inject(forwardRef(() => NgZone)) private _zone: NgZone,
+		@Inject(forwardRef(() => ChangeDetectorRef)) private _cd: ChangeDetectorRef
+	) {
 		super();
 	}
 
@@ -96,8 +100,14 @@ export class PanelComponent extends Disposable implements AfterContentInit, OnIn
 
 	ngAfterContentInit(): void {
 		if (this._tabs && this._tabs.length > 0) {
-			this._activeTab = this._tabs.first;
-			this._activeTab.active = true;
+			this.selectTab(this._tabs.first);
+		} else {
+			const tabSub = this._tabs.changes.subscribe(() => {
+				if (this._tabs && this._tabs.length > 0) {
+					this.selectTab(this._tabs.first);
+					tabSub.unsubscribe();
+				}
+			});
 		}
 	}
 
@@ -214,6 +224,8 @@ export class PanelComponent extends Disposable implements AfterContentInit, OnIn
 					activeTabHeader.focusOnTabHeader();
 				}
 
+				this._cd.detectChanges();
+
 				this.onTabChange.emit(tab);
 			});
 		}
@@ -268,5 +280,9 @@ export class PanelComponent extends Disposable implements AfterContentInit, OnIn
 		if (this._mru.length > 0) {
 			this.selectTab(this._mru[0]);
 		}
+	}
+
+	public layout() {
+		this._activeTab.layout();
 	}
 }
