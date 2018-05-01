@@ -26,7 +26,7 @@ import * as nls from 'vs/nls';
 	providers: [{ provide: TabChild, useExisting: forwardRef(() => DashboardNavSection) }],
 	templateUrl: decodeURI(require.toUrl('sql/parts/dashboard/containers/dashboardNavSection.component.html'))
 })
-export class DashboardNavSection extends DashboardTab implements OnDestroy, OnChanges, AfterContentInit {
+export class DashboardNavSection extends DashboardTab implements OnDestroy, AfterContentInit {
 	@Input() private tab: TabConfig;
 	protected tabs: Array<TabConfig> = [];
 	private _onResize = new Emitter<void>();
